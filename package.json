@@ -1,0 +1,45 @@
+{
+  "name": "sentiment",
+  "version": "0.0.1",
+  "description": "Sentiment rewrite with Webpack and Redux.",
+  "main": "application.js",
+  "scripts": {
+    "babel-node": "babel-node --stage 0 --ignore='foo|bar|baz'",
+    "build": "webpack",
+    "server": "node ./application.js",
+    "dev": "npm run dev-client & npm run dev-server",
+    "hot": "npm run hot-client & node webpack-dev-server",
+    "prod": "npm run build-server && NODE_ENV=production npm run server & npm run prod-client",
+    "build-server": "babel -d ./build ./server -s",
+    "dev-client": "webpack-dev-server --config webpack.config.dev.js --color --progress --inline --content-base build",
+    "hot-client": "webpack-dev-server --config webpack.config.hot.js --color --progress --inline --content-base build",
+    "prod-client": "NODE_ENV=production webpack",
+    "dev-server": "NODE_ENV=development nodemon --exec npm run babel-node -- application.js"
+  },
+  "author": "Sean Owiecki",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "chartist": "^0.9.4",
+    "cookie-parser": "^1.4.0",
+    "express": "^4.13.3",
+    "lodash": "^3.10.1",
+    "moment": "^2.10.6",
+    "morgan": "^1.6.1",
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0",
+    "react-redux": "^3.1.0",
+    "redux": "^3.0.2",
+    "serve-favicon": "^2.3.0",
+    "slug": "^0.9.1"
+  },
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "babel-core": "^5.8.25",
+    "babel-loader": "^5.3.2",
+    "react-transform-hmr": "^1.0.1",
+    "webpack": "^1.12.2",
+    "webpack-dev-middleware": "^1.2.0",
+    "webpack-dev-server": "^1.12.0",
+    "webpack-hot-middleware": "^2.4.1"
+  }
+}
