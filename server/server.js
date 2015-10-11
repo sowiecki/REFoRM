@@ -1,25 +1,60 @@
-import express from 'express';
-let server = express();
+const falcorExpress = require('falcor-express');
+const express = require('express');
+const mongoose = require('mongoose');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
-server.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+const config = require('./config');
+const formRouter = require('./routers/form');
 
-const port = normalizePort(process.env.PORT || '3000');
-server.set('port', port);
+const server = express();
 
-function normalizePort(val) {
-  let port = parseInt(val, 10);
+// Configuration
+server.use(logger('dev'));
+server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({ extended: false }));
+server.use(cookieParser());
+server.set('port', config.port);
+server.set('views', path.join(__dirname, 'views'));
+server.set('view engine', 'ejs');
+server.use(express.static(path.join(__dirname, `${config.publicPath}`)));
 
-  if (isNaN(port)) {
-    return val;
-  }
+// Database
+const connect = () => {
+  mongoose.connect(config.dbURI, config.dbOptions);
+};
+connect();
+mongoose.connection.on('error', console.log);
+mongoose.connection.on('disconnected', connect);
 
-  if (port >= 0) {
-    return port;
-  }
+// Client hot reloading (dev only)
+if (process.env.HOT) {
+  const webpack = require('webpack');
+  const webpackConfig = require('../webpack.config.hot');
 
-  return false;
+  const compiler = webpack(webpackConfig);
+
+  server.use(require('webpack-dev-middleware')(compiler, {
+    noInfo: true,
+    publicPath: webpackConfig.output.publicPath
+  }));
+
+  server.use(require('webpack-hot-middleware')(compiler));
 }
 
-export default server;
+// Falcor routing
+server.use('/model.json', falcorExpress.dataSourceRoute((req, res) => {
+  return formRouter(req, res);
+}));
+
+// Serve client
+server.get('*', (req, res) => {
+  res.render('application', {
+    port: process.env.HOT || process.env.NODE_ENV ? config.port : 8080
+  });
+});
+
+module.exports = server;

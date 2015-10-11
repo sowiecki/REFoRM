@@ -2,24 +2,23 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  constent: __dirname,
-  entry: path.join(__dirname, './client/application.jsx'),
+  context: __dirname,
+  entry: './client/application.jsx',
   output: {
-    path: path.resolve(__dirname, './build/'),
+    path:  path.resolve(__dirname, './public/dist'),
     filename: 'bundle.js',
-    publicPath: 'http://localhost:8080/build'
+    publicPath: 'http://localhost:3000/dist/'
   },
   resolve: {
-    extensions: ['.js', 'jsx']
+    extensions: ['', '.js', '.jsx']
   },
   module: {
     loaders: [
       {
         test: /\.jsx?$/,
-        exclude: /node_modules/,
         loaders: ['babel'],
         include: path.join(__dirname, 'client'),
-        exclude: /node_module/
+        exclude: /node_modules/,
       },
       {
         test: /\.scss$/,

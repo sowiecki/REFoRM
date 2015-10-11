@@ -1,9 +1,9 @@
-var path = require('path');
-var webpack = require('webpack');
-var base = require('./webpack.config');
+const path = require('path');
+const webpack = require('webpack');
+const base = require('./webpack.config');
 
 module.exports = {
-  contet: base.context,
+  context: base.context,
   entry: base.entry,
   output: base.output,
   resolve: base.resolve,
